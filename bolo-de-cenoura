@@ -1,5 +1,5 @@
 #=================================================
-# Como extrair uma informação de multiplos links
+# Como extrair uma informaÃ§Ã£o de multiplos links
 #=================================================
 ## PACOTES
 library("rvest")
@@ -19,30 +19,30 @@ exemplo <- read_html("http://allrecipes.com.br/receita/2453/bolo-de-cenoura-com-
 ## LINK DA BUSCA POR BOLO DE CENOURA
 #  http://allrecipes.com.br/receitas/etiqueta-572/receitas-de-bolo-de-cenoura.aspx?page=2
 
-## PASSO 1. Obter os links de cada página do resultado
+## PASSO 1. Obter os links de cada pÃ¡gina do resultado
 
-#Primeiro é necessário verificar o que muda no link de uma pagian 
-# de resultado para outra. Nesse caso, só muda o númeoro no final do link
+#Primeiro Ã© necessÃ¡rio verificar o que muda no link de uma pagian 
+# de resultado para outra. Nesse caso, sÃ³ muda o nÃºmeoro no final do link
 
-#Agora vamos descobrir o total de páginas do resultado
+#Agora vamos descobrir o total de pÃ¡ginas do resultado
 site <- "http://allrecipes.com.br/receitas/etiqueta-572/receitas-de-bolo-de-cenoura.aspx?page=2"
 total_p <- c(1:6)
 result_pages <- paste0("http://allrecipes.com.br/receitas/etiqueta-572/receitas-de-bolo-de-cenoura.aspx?page=", total_p)
 result_pages
 
 # PASSO 2. Obter os links de cada uma das receitas do site, contidas em cada
-# uma das 6 páginas de resultado. Vou começar criando uma função para raspar o link
+# uma das 6 pÃ¡ginas de resultado. Vou comeÃ§ar criando uma funÃ§Ã£o para raspar o link
 
 link_recipe <- function(x)
 {
   read_html(x) %>% html_nodes(".col-sm-7 a") %>% html_attr("href") %>% data.frame()
 }
-#Uma vez criada a função, vou usar o "map_df" para aplicar aquela função 
-# em cada um das páginas de resultado. O resultado final serão os links das receitas
+#Uma vez criada a funÃ§Ã£o, vou usar o "map_df" para aplicar aquela funÃ§Ã£o 
+# em cada um das pÃ¡ginas de resultado. O resultado final serÃ£o os links das receitas
 link_receitas <- map_df(result_pages, link_recipe)
 
 # PASSO 3. Obter os ingredientes de cada uma das receitas
-#Antes criar uma função para raspar os ingredientes
+#Antes criar uma funÃ§Ã£o para raspar os ingredientes
 
 get_ingredients <- function(x)
 {
@@ -52,31 +52,31 @@ get_ingredients <- function(x)
     str_to_lower() %>% 
     data.frame()
 }
-#COm a função, vou usar o "map_df" para aplicar a cada uma das receitas, a partir dos 
+#COm a funÃ§Ã£o, vou usar o "map_df" para aplicar a cada uma das receitas, a partir dos 
 # dos respectivos links
 ingredientes <-map_df (link_receitas$., get_ingredients)
 
 ##Passo 4. Juntar num mesmo banco, os ingredientes, os links das receitas e os nomes das receitas
-# De tudo isso, a única informação que não temos são os nomes. Vamos a eles
+# De tudo isso, a Ãºnica informaÃ§Ã£o que nÃ£o temos sÃ£o os nomes. Vamos a eles
 
 
 
 dados <- bind_cols(ingredientes, link_receitas)
 dados <- rename(dados, ingredientes = ., links = ".1")
 
-#Obter o nome da receita e incluí-lo no banco. (Extrair o nome pelo link)
+#Obter o nome da receita e incluÃ­-lo no banco. (Extrair o nome pelo link)
  n1 <- dados$links %>%  str_split_fixed ("/", 6) 
 n2 <- n1 [, 6]
 n3 <- n2 %>% str_replace_all("-", " ")
 str_length(".aspx?o_is=LV")
 dados$nomes <- n3 %>% str_sub(1, (str_length(n3)-13))
 
-## Exercícios com o banco
+## ExercÃ­cios com o banco
 #receitas sem trigo
 
 dados %>%  filter(str_detect(ingredientes, "trigo") )
 sem_trigo <- dados %>% filter( str_detect(ingredientes, "trigo")==FALSE)
-sem_açúcar <- dados %>% filter( str_detect(ingredientes, "açúcar")==FALSE)
+sem_aÃ§Ãºcar <- dados %>% filter( str_detect(ingredientes, "aÃ§Ãºcar")==FALSE)
 sem_ovos <- dados %>% filter( str_detect(ingredientes, "ovo")==FALSE)
 
 git remote add origin https://github.com/SauloSaid/Publico.git
