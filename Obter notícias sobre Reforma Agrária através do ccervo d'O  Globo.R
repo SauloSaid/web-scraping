@@ -1,0 +1,74 @@
+#=============================================================
+##  Ler matérias do jornal O Globo sobre a Reforma Agrária
+#=============================================================
+##  Pactoes
+library("rvest")
+library(stringr)
+library(dplyr)
+
+#   O objetivo, nesse caso, é pegar informações como a data das edições que corrrespondem
+# a busca e a sua respectiva página. 
+
+#Página de busca. Deve-se proceder a busca no site do jornal e obter o link
+# http://acervo.oglobo.globo.com/busca/?tipoConteudo=artigo&pagina=2&ordenacaoData=relevancia&allwords=&anyword=&noword=Cuba%2C+Ir%C3%A3%2C+Bol%C3%ADvia%2C+Venezuela%2C+EUA%2C+China%2C+Egito%2C+M%C3%A9xico%2C+Iraque%2C+Hungria%2C+Guatemala%2C+Guiana%2C+It%C3%A1lia&exactword=reforma+agraria&decadaSelecionada=1950
+# http://acervo.oglobo.globo.com/busca/?tipoConteudo=artigo&pagina=2&ordenacaoData=relevancia&allwords=&anyword=&noword=Cuba%2C+Ir%C3%A3%2C+Bol%C3%ADvia%2C+Venezuela%2C+EUA%2C+China%2C+Egito%2C+M%C3%A9xico%2C+Iraque%2C+Hungria%2C+Guatemala%2C+Guiana%2C+It%C3%A1lia&exactword=reforma+agraria&decadaSelecionada=1950+Ir%C3%A3%2C+Bol%C3%ADvia%2C+Venezuela%2C+EUA%2C+China%2C+Egito%2C+M%C3%A9xico%2C+Iraque%2C+Hungria%2C+Guatemala%2C+Guiana%2C+It%C3%A1lia&exactword=reforma+agraria&decadaSelecionada=1950
+# Termos excluidos da pesquisa: Cuba, Irã, Bolívia, Venezuela, EUA, China, Egito, México, Iraque, Hungria, Guatemala, Guiana, Itália
+
+#Obter o total de página: pegar o total de resultados e dividir por 15
+450/15
+#30 páginas de resultado
+
+## OBTER O LINK DAS  PÁGINAS DE RESULTADO DA BUSCA
+#  A única diferença entre as páginas de resultado é um número depois de "página=".
+#   então, basta criar links com números de 1 a 30 após esse trecho, e juntar com o restante do link
+
+l1 <- "http://acervo.oglobo.globo.com/busca/?tipoConteudo=artigo&pagina="
+l3 <- "&ordenacaoData=relevancia&allwords=&anyword=&noword=Cuba%2C+Ir%C3%A3%2C+Bol%C3%ADvia%2C+Venezuela%2C+EUA%2C+China%2C+Egito%2C+M%C3%A9xico%2C+Iraque%2C+Hungria%2C+Guatemala%2C+Guiana%2C+It%C3%A1lia&exactword=reforma+agraria&decadaSelecionada=1950"
+l2 <- c(1:30)
+
+result_pages <- paste0(l1, l2, l3)
+result_pages
+
+#Fazer o loop para ler a pagina
+noticias <- ""
+for (i in seq_along(result_pages))
+{
+not  <- read_html(result_pages[i]) %>% 
+    html_nodes("figcaption") %>% 
+    html_text() 
+noticias <- c(not, noticias)
+}
+
+not1<- data.frame(data=noticias)
+not1$data <- as.character(not1$data)
+
+noticias_1950<- str_split (not1$data, ",", simplify = TRUE) %>% as.data.frame() 
+
+#Obter notícias dos anos 1960
+l4 <- l3
+l4 <- str_replace(l4, "1950", "1960")
+l4
+
+# Antes de gerar os links de resultados para os anos 1960, é preciso dividir o total de resultados por 15
+# 4198/15 = 280 (arredondando pra cima)
+resulta_pages <- paste0(l1, c(1:280), l4)
+resulta_pages
+
+#Fazer o loop para ler as paginas
+
+noticias1 <- ""
+for (i in seq_along(resulta_pages))
+{
+  not  <- read_html(resulta_pages[i]) %>% 
+    html_nodes("figcaption") %>% 
+    html_text() 
+  noticias1 <- c(not, noticias1)
+}
+noticias_1960 <- str_split(noticias1, ",", simplify = TRUE) %>% as.data.frame(stringsAsFactors = FALSE)
+4198/15
+
+ agraria <- rbind(noticias_1950, noticias_1960)
+ 
+write.table(agraria, "Notícias sobre a Reforma Agrária nas páginas de O Globo.csv", sep=";", row.names = FALSE)
+getwd()
+setwd("C:/Users/Saulo/Documents/Capítulo V")
