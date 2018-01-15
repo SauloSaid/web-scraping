@@ -14,7 +14,7 @@ library(dplyr)
 # http://acervo.oglobo.globo.com/busca/?tipoConteudo=artigo&pagina=2&ordenacaoData=relevancia&allwords=&anyword=&noword=Cuba%2C+Ir%C3%A3%2C+Bol%C3%ADvia%2C+Venezuela%2C+EUA%2C+China%2C+Egito%2C+M%C3%A9xico%2C+Iraque%2C+Hungria%2C+Guatemala%2C+Guiana%2C+It%C3%A1lia&exactword=reforma+agraria&decadaSelecionada=1950+Ir%C3%A3%2C+Bol%C3%ADvia%2C+Venezuela%2C+EUA%2C+China%2C+Egito%2C+M%C3%A9xico%2C+Iraque%2C+Hungria%2C+Guatemala%2C+Guiana%2C+It%C3%A1lia&exactword=reforma+agraria&decadaSelecionada=1950
 # Termos excluidos da pesquisa: Cuba, Irã, Bolívia, Venezuela, EUA, China, Egito, México, Iraque, Hungria, Guatemala, Guiana, Itália
 
-#Obter o total de página: pegar o total de resultados e dividir por 15
+#Obter o total de páginas: pegar o total de resultados e dividir por 15
 450/15
 #30 páginas de resultado
 
