@@ -28,4 +28,9 @@ webElem2$clickElement()
 # Criar um objeto com o link do endereço
 link_com_coordenadas <- remDr$getCurrentUrl() %>% unlist() %>% extract2(1)
 
+#Extrair as coordenadas que constam no link
+inicio <- str_locate(string = link_com_coordenadas, pattern = "@")
+coordenadas <- str_sub(string = link_com_coordenadas, start =  inicio[1,1]+1, end = 108+60) %>%
+  str_split(pattern = ",")%>% 
+  extract2(1) %>% extract(1:2)
 
