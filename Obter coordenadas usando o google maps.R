@@ -1,0 +1,31 @@
+######################################################################
+# Obter as coordenadas de um endereço usando o RSelenium
+######################################################################
+
+#PACOTES
+library(RSelenium)
+
+# Abrir o chrome remoto 
+rsDriver()
+remDr <- remoteDriver(port = 4567L, browserName = "chrome")
+remDr$open()
+
+# Navegar para a pággina do Google Maps
+remDr$navigate("https://www.google.com.br/maps")
+
+# Selecionando  caixa de texto onde se escreve a busca
+webElem <- remDr$findElement(using = 'css selector',"#searchboxinput")
+
+# Enviando um endereço para a caixa de texto. No exemplo, um endereço em Botafogo
+webElem$sendKeysToElement(list("Rua Voluntários da Pátria, 5, Botafogo, Rio de Janeiro"))
+
+#Selecionar o botão da busca
+webElem2 <-  remDr$findElement(using = 'css selector',"#searchbox-searchbutton")
+
+# Clicar no botão que realiza a busca
+webElem2$clickElement()
+
+# Criar um objeto com o link do endereço
+link_com_coordenadas <- remDr$getCurrentUrl() %>% unlist() %>% extract2(1)
+
+
