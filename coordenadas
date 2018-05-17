@@ -4,6 +4,8 @@
 
 #PACOTES
 library(RSelenium)
+library(magrittr)
+library(stringr)
 
 # Abrir o chrome remoto 
 rsDriver()
